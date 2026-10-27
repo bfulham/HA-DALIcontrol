@@ -1,0 +1,76 @@
+recall_scene:
+  target:
+    entity:
+      integration: dalicontrol
+      domain: light
+  fields:
+    scene:
+      required: true
+      example: 3
+      selector:
+        number:
+          min: 0
+          max: 15
+          mode: box
+
+run_sequence:
+  fields:
+    config_entry_id: &entry
+      required: true
+      selector:
+        config_entry:
+          integration: dalicontrol
+    group: &group
+      required: true
+      example: 5
+      selector:
+        number:
+          min: 1
+          max: 128
+          mode: box
+    sequence:
+      required: true
+      selector:
+        number:
+          min: 1
+          max: 32
+          mode: box
+    step:
+      default: 1
+      selector:
+        number:
+          min: 1
+          max: 8
+          mode: box
+
+run_list:
+  fields:
+    config_entry_id: *entry
+    group: *group
+    list:
+      required: true
+      selector:
+        number:
+          min: 1
+          max: 26
+          mode: box
+
+stop_list:
+  fields:
+    config_entry_id: *entry
+    group: *group
+    list:
+      selector:
+        number:
+          min: 1
+          max: 26
+          mode: box
+
+send_raw:
+  fields:
+    config_entry_id: *entry
+    frame:
+      required: true
+      example: "$011014010010051000500*"
+      selector:
+        text:

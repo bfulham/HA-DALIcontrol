@@ -1,0 +1,128 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Add a DCBM line controller",
+        "description": "UDP (port 1235) is recommended. A controller only allows 4 TCP sockets (port 1001). For UDP the host can be the VLAN broadcast address, but then every controller on the VLAN sees the commands.",
+        "data": {
+          "host": "Host / IP address",
+          "controller_id": "Controller ID (as programmed in DCBM Manager)",
+          "protocol": "Protocol",
+          "port": "Port (blank = default for protocol)",
+          "name": "Name"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Could not connect to the controller"
+    },
+    "abort": {
+      "already_configured": "This controller is already configured"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Manage lights",
+        "menu_options": {
+          "add_light": "Add a light",
+          "remove_light": "Remove lights"
+        }
+      },
+      "add_light": {
+        "title": "Add a light",
+        "description": "Groups are 0-15 and ballasts 0-63. The address is ignored for broadcast.",
+        "data": {
+          "name": "Name",
+          "kind": "Type",
+          "line": "DALI line",
+          "address": "Address"
+        }
+      },
+      "remove_light": {
+        "title": "Remove lights",
+        "data": {
+          "remove": "Lights to remove"
+        }
+      }
+    },
+    "error": {
+      "invalid_group": "A DALI group address must be 0-15",
+      "invalid_ballast": "A DALI ballast address must be 0-63",
+      "already_added": "That address is already added"
+    },
+    "abort": {
+      "no_lights": "There are no lights to remove"
+    }
+  },
+  "selector": {
+    "protocol": {
+      "options": {
+        "udp": "UDP (recommended)",
+        "tcp": "TCP"
+      }
+    },
+    "kind": {
+      "options": {
+        "group": "Group",
+        "ballast": "Ballast",
+        "broadcast": "Broadcast"
+      }
+    },
+    "line": {
+      "options": {
+        "a": "Line A",
+        "b": "Line B",
+        "both": "Lines A and B"
+      }
+    }
+  },
+  "services": {
+    "recall_scene": {
+      "name": "Recall scene",
+      "description": "Recall a DALI scene (0-15) on the light's group, ballast or broadcast address.",
+      "fields": {
+        "scene": {
+          "name": "Scene",
+          "description": "Scene number 0-15."
+        }
+      }
+    },
+    "run_sequence": {
+      "name": "Run sequence",
+      "description": "Start a controller sequence on a line controller group.",
+      "fields": {
+        "config_entry_id": {"name": "Controller", "description": "The DCBM controller."},
+        "group": {"name": "Group", "description": "1-64 is Group A, 65-128 is Group B."},
+        "sequence": {"name": "Sequence", "description": "Sequence 1-32."},
+        "step": {"name": "Step", "description": "Step 1-8."}
+      }
+    },
+    "run_list": {
+      "name": "Run list",
+      "description": "Start a controller list.",
+      "fields": {
+        "config_entry_id": {"name": "Controller", "description": "The DCBM controller."},
+        "group": {"name": "Group", "description": "1-64 is Group A, 65-128 is Group B."},
+        "list": {"name": "List", "description": "List 1-26."}
+      }
+    },
+    "stop_list": {
+      "name": "Stop list",
+      "description": "Stop a running list.",
+      "fields": {
+        "config_entry_id": {"name": "Controller", "description": "The DCBM controller."},
+        "group": {"name": "Group", "description": "1-64 is Group A, 65-128 is Group B."},
+        "list": {"name": "List", "description": "List 1-26. Leave blank to stop whichever list is running."}
+      }
+    },
+    "send_raw": {
+      "name": "Send raw frame",
+      "description": "Send a hand built frame, for example $011014010010051000500*.",
+      "fields": {
+        "config_entry_id": {"name": "Controller", "description": "The DCBM controller."},
+        "frame": {"name": "Frame", "description": "Full frame including the leading $ and trailing *."}
+      }
+    }
+  }
+}
