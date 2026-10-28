@@ -31,7 +31,7 @@
       },
       "add_light": {
         "title": "Add a light",
-        "description": "Groups are 0-15 and ballasts 0-63. The address is ignored for broadcast.",
+        "description": "DALI groups are 0-15, ballasts 0-63. For a controller group such as GA20, choose Controller group, line A and address 20 (GB groups use line B). The address is ignored for broadcast.",
         "data": {
           "name": "Name",
           "kind": "Type",
@@ -49,6 +49,8 @@
     "error": {
       "invalid_group": "A DALI group address must be 0-15",
       "invalid_ballast": "A DALI ballast address must be 0-63",
+      "invalid_controller_group": "A controller group must be 1-64",
+      "controller_group_line": "A controller group is on line A (GA) or line B (GB), not both",
       "already_added": "That address is already added"
     },
     "abort": {
@@ -64,7 +66,8 @@
     },
     "kind": {
       "options": {
-        "group": "Group",
+        "group": "DALI group (0-15)",
+        "controller_group": "Controller group (GA/GB 1-64)",
         "ballast": "Ballast",
         "broadcast": "Broadcast"
       }

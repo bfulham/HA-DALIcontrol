@@ -7,7 +7,7 @@ Home Assistant custom integration for Clipsal / Schneider Electric **DALIcontrol
 ## Features
 
 - One config entry per DCBM line controller (host, controller ID, UDP or TCP).
-- Lights for DALI **groups**, **ballasts** or **broadcast**, on line A, B or both, with brightness (direct arc level).
+- Lights for DALI **groups** (0-15), **controller groups** (GA1-64 / GB1-64, as named in DCBM Manager), **ballasts** or **broadcast**, with brightness (direct arc level).
 - Services: `dalicontrol.recall_scene` (on a light), `run_sequence`, `run_list`, `stop_list` and `send_raw`.
 
 ## Limitations
@@ -33,7 +33,7 @@ Copy `custom_components/dalicontrol` into your Home Assistant `config/custom_com
 
 1. **Settings > Devices & services > Add integration > DALIcontrol**.
 2. Enter the controller's IP, its **controller ID** (000-254, as programmed in DCBM Manager) and the protocol. Leave the port blank for the default (UDP 1235, TCP 1001).
-3. Open the entry's **Configure** menu and add lights: a name, type (group 0-15, ballast 0-63, broadcast), line and address.
+3. Open the entry's **Configure** menu and add lights: a name, type (DALI group 0-15, controller group, ballast 0-63, broadcast), line and address. For GA20 choose **Controller group**, line **A**, address **20**.
 
 For UDP the host may be the VLAN broadcast address, but every controller on the VLAN then receives the frame. Controllers ignore frames with a different controller ID.
 

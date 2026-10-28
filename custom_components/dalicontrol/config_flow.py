@@ -23,6 +23,7 @@ from .const import (
     DOMAIN,
     KIND_BALLAST,
     KIND_BROADCAST,
+    KIND_CONTROLLER_GROUP,
     KIND_GROUP,
     LINE_A,
     LINE_B,
@@ -123,6 +124,10 @@ class DaliControlOptionsFlow(OptionsFlow):
                 errors[CONF_ADDRESS] = "invalid_group"
             elif kind == KIND_BALLAST and not 0 <= address <= 63:
                 errors[CONF_ADDRESS] = "invalid_ballast"
+            elif kind == KIND_CONTROLLER_GROUP and not 1 <= address <= 64:
+                errors[CONF_ADDRESS] = "invalid_controller_group"
+            elif kind == KIND_CONTROLLER_GROUP and user_input[CONF_LINE] == LINE_BOTH:
+                errors[CONF_LINE] = "controller_group_line"
             else:
                 if kind == KIND_BROADCAST:
                     address = 0
@@ -144,7 +149,7 @@ class DaliControlOptionsFlow(OptionsFlow):
             {
                 vol.Required(CONF_NAME): str,
                 vol.Required(CONF_KIND, default=KIND_GROUP): _select(
-                    [KIND_GROUP, KIND_BALLAST, KIND_BROADCAST], "kind"
+                    [KIND_GROUP, KIND_CONTROLLER_GROUP, KIND_BALLAST, KIND_BROADCAST], "kind"
                 ),
                 vol.Required(CONF_LINE, default=LINE_A): _select(
                     [LINE_A, LINE_B, LINE_BOTH], "line"

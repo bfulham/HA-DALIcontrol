@@ -16,6 +16,7 @@ PROTOCOL_TCP = "tcp"
 DEFAULT_PORT = {PROTOCOL_UDP: 1235, PROTOCOL_TCP: 1001}
 
 KIND_GROUP = "group"
+KIND_CONTROLLER_GROUP = "controller_group"
 KIND_BALLAST = "ballast"
 KIND_BROADCAST = "broadcast"
 

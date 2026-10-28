@@ -30,11 +30,21 @@ from .const import (
     DOMAIN,
     KIND_BALLAST,
     KIND_BROADCAST,
+    KIND_CONTROLLER_GROUP,
     KIND_GROUP,
     LINE_A,
     LINE_B,
 )
-from .protocol import AddressType, DaliAction, Line, dali_command, dali_scene
+from .protocol import (
+    SCENE_BASE,
+    AddressType,
+    DaliAction,
+    GroupActionType,
+    Line,
+    dali_command,
+    dali_scene,
+    group_command,
+)
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -74,7 +84,13 @@ class DaliLight(LightEntity, RestoreEntity):
         self._client = entry.runtime_data
         self._controller = entry.data[CONF_CONTROLLER_ID]
         self._line = _LINES.get(cfg[CONF_LINE], Line.BOTH)
-        self._type = _KINDS[cfg[CONF_KIND]]
+        self._controller_group = None
+        if cfg[CONF_KIND] == KIND_CONTROLLER_GROUP:
+            # Group A is 1-64, Group B is 65-128 in the Group Type command.
+            self._controller_group = cfg[CONF_ADDRESS] + (64 if cfg[CONF_LINE] == LINE_B else 0)
+            self._type = AddressType.GROUP
+        else:
+            self._type = _KINDS[cfg[CONF_KIND]]
         self._address = cfg[CONF_ADDRESS]
         self._attr_name = cfg[CONF_NAME]
         self._attr_unique_id = f"{entry.entry_id}_{cfg[CONF_KIND]}_{cfg[CONF_LINE]}_{self._address}"
@@ -100,6 +116,13 @@ class DaliLight(LightEntity, RestoreEntity):
             raise HomeAssistantError(str(err)) from err
 
     def _cmd(self, *, direct: bool, action: int) -> str:
+        if self._controller_group is not None:
+            return group_command(
+                self._controller,
+                self._controller_group,
+                GroupActionType.ARC_LEVEL if direct else GroupActionType.DALI,
+                action,
+            )
         return dali_command(
             self._controller, self._line, self._type, self._address, direct=direct, action=action
         )
@@ -119,8 +142,12 @@ class DaliLight(LightEntity, RestoreEntity):
         self.async_write_ha_state()
 
     async def async_recall_scene(self, scene: int) -> None:
-        await self._send(
-            dali_scene(self._controller, self._line, self._type, self._address, scene)
-        )
+        if self._controller_group is not None:
+            frame = self._cmd(direct=False, action=SCENE_BASE + scene)
+        else:
+            frame = dali_scene(
+                self._controller, self._line, self._type, self._address, scene
+            )
+        await self._send(frame)
         self._attr_is_on = True
         self.async_write_ha_state()
